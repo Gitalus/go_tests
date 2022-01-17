@@ -1,7 +1,13 @@
 package main
 
+const englishHelloPrefix = "Hello, "
+
 func Hello(text string) string {
-	return "Hello, " + text
+	if text == "" {
+		text = "World"
+	}
+
+	return englishHelloPrefix + text
 }
 
 func main() {
