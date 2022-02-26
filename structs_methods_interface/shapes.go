@@ -1,15 +1,36 @@
 package structs_methods_interface
 
+import "math"
+
+/* Las struct son colecciones de distintos tipos definidos
+Se definen con Nombre{dato1, dato2} */
 type Rectangle struct {
-	width  float64
-	height float64
+	Width  float64
+	Height float64
+}
+
+// Declaration of a method func (receiverName ReceiverType) MethodName(args)
+func (r Rectangle) Area() float64 {
+	return r.Width * r.Height
+}
+
+type Circle struct {
+	Radius float64
+}
+
+func (c Circle) Area() float64 {
+	return math.Pi * c.Radius * c.Radius
+}
+
+type Shape interface {
+	Area() float64
 }
 
 func Perimeter(rectangle Rectangle) float64 {
-	return 2 * (rectangle.width + rectangle.height)
+	return 2 * (rectangle.Width + rectangle.Height)
 }
 
 // area can be in lowecase because is only being used on the same package
 func Area(rectangle Rectangle) float64 {
-	return rectangle.width * rectangle.height
+	return rectangle.Width * rectangle.Height
 }
