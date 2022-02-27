@@ -16,3 +16,8 @@ func (d Dictionary) Search(word string) (string, error) {
 
 	return definition, nil
 }
+
+func (d Dictionary) Add(word, definition string) {
+	// This work because dictionary is already a pointer, so the copy is a copy of a pointer
+	d[word] = definition
+}
