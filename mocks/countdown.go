@@ -7,18 +7,29 @@ import (
 	"time"
 )
 
-type DefaultSleeper struct{}
-
-func (d *DefaultSleeper) Sleep() {
-	time.Sleep(1 * time.Second)
-}
-
 const (
 	finalWord      = "Go!"
 	countdownStart = 3
 	write          = "write"
 	sleep          = "sleep"
 )
+
+type ConfigurableSleeper struct {
+	duration time.Duration
+	sleep    func(time.Duration)
+}
+
+func (c *ConfigurableSleeper) Sleep() {
+	c.sleep(c.duration)
+}
+
+type SpyTime struct {
+	durationSlept time.Duration
+}
+
+func (s *SpyTime) Sleep(duration time.Duration) {
+	s.durationSlept = duration
+}
 
 type Sleeper interface {
 	Sleep()
@@ -38,15 +49,13 @@ func (s *SpyCountdownOperations) Write(p []byte) (n int, err error) {
 }
 
 func main() {
-	sleeper := &DefaultSleeper{}
+	sleeper := &ConfigurableSleeper{1 * time.Second, time.Sleep}
 	Countdown(os.Stdout, sleeper)
 }
 
 func Countdown(out io.Writer, sleeper Sleeper) {
-	// Este approach es muy recomendado y bueno, permite muchas cosas y funciona e2e
-	// El test demorará 4 segundos, lo que empeora la productividad
 	for i := countdownStart; i > 0; i-- {
-		// ¿La deferrencia del puntero se hace automática cuando se ejecuta un método?
+		// ¿La deferencia del puntero se hace automática?
 		sleeper.Sleep()
 		fmt.Fprintln(out, i)
 	}
