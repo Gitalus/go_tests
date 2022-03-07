@@ -3,22 +3,30 @@ package races
 
 import (
 	"net/http"
-	"time"
 )
 
-func Racer(firstURL, secondURL string) (winner string) {
-	aDuration := measureResponseTime(firstURL)
-	bDuration := measureResponseTime(secondURL)
-
-	if aDuration < bDuration {
-		return firstURL
+func Racer(aURL, bURL string) (winner string) {
+	// select espera multiples channels, el primero en enviar un valor gana
+	select {
+	case <-ping(aURL):
+		return aURL
+	case <-ping(bURL):
+		return bURL
 	}
-
-	return secondURL
 }
 
-func measureResponseTime(url string) time.Duration {
-	start := time.Now()
-	http.Get(url)
-	return time.Since(start)
+func ping(url string) chan struct{} { // returns a empty struct because is the smallest type
+	// Always use make for channel to avoid zero value for channles, that is nil
+	ch := make(chan struct{})
+	go func() {
+		http.Get(url)
+		close(ch)
+	}()
+	return ch
 }
+
+// func measureResponseTime(url string) time.Duration {
+// 	start := time.Now()
+// 	http.Get(url)
+// 	return time.Since(start)
+// }
