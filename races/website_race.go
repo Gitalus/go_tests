@@ -2,16 +2,21 @@
 package races
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 )
 
-func Racer(aURL, bURL string) (winner string) {
+func Racer(aURL, bURL string) (winner string, error error) {
 	// select espera multiples channels, el primero en enviar un valor gana
 	select {
 	case <-ping(aURL):
-		return aURL
+		return aURL, nil
 	case <-ping(bURL):
-		return bURL
+		return bURL, nil
+	case <-time.After(10 * time.Second):
+		// Errorf returns a created error
+		return "", fmt.Errorf("timed out waiting fot %s and %s", aURL, bURL)
 	}
 }
 
