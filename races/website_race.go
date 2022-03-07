@@ -7,16 +7,22 @@ import (
 	"time"
 )
 
+var tenSecondTimeout = 10 * time.Second
+
 func Racer(aURL, bURL string) (winner string, error error) {
+	return ConfigurableRacer(aURL, bURL, tenSecondTimeout)
+}
+
+func ConfigurableRacer(a, b string, timeout time.Duration) (winner string, error error) {
 	// select espera multiples channels, el primero en enviar un valor gana
 	select {
-	case <-ping(aURL):
-		return aURL, nil
-	case <-ping(bURL):
-		return bURL, nil
-	case <-time.After(10 * time.Second): // time.After() returns a chan
+	case <-ping(a):
+		return a, nil
+	case <-ping(b):
+		return b, nil
+	case <-time.After(timeout): // time.After() returns a chan
 		// Errorf returns a created error
-		return "", fmt.Errorf("timed out waiting fot %s and %s", aURL, bURL)
+		return "", fmt.Errorf("timed out waiting fot %s and %s", a, b)
 	}
 }
 
