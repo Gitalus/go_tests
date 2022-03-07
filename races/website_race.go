@@ -14,7 +14,7 @@ func Racer(aURL, bURL string) (winner string, error error) {
 		return aURL, nil
 	case <-ping(bURL):
 		return bURL, nil
-	case <-time.After(10 * time.Second):
+	case <-time.After(10 * time.Second): // time.After() returns a chan
 		// Errorf returns a created error
 		return "", fmt.Errorf("timed out waiting fot %s and %s", aURL, bURL)
 	}
