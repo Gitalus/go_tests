@@ -28,3 +28,11 @@ func simpleTime(hours, minutes, seconds int) time.Time {
 func testName(t time.Time) string {
 	return t.Format("15:04:05")
 }
+
+func zero() float64 {
+	return 0.0
+}
+
+func secondHandPoint(t time.Time) Point {
+	return Point{}
+}
